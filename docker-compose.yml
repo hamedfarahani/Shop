@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: shop.app
+        restart: always
+        volumes:
+            - .:/var/www/html
+        command: bash -c "cp .env.example .env && composer i && php artisan key:generate &&  php-fpm"
+        depends_on:
+            - nginx
+        networks:
+            - shop_netwotk
+    nginx:
+        build:
+            context: .
+            dockerfile: Dockerfile.nginx
+        restart: always
+        ports:
+            - "8000:80"
+        networks:
+            - shop_netwotk
+        volumes:
+            - ./default.conf:/etc/nginx/conf.d/default.conf
+            - .:/var/www/html
+    postgres:
+        image: postgres:latest
+        container_name: shop.postgres
+        restart: always
+        environment:
+            POSTGRES_DB: odin
+            POSTGRES_USER: odin
+            POSTGRES_PASSWORD: secret
+        volumes:
+            - /var/lib/postgresql/data:/var/lib/postgresql/data
+        networks:
+            - shop_netwotk
+        ports:
+            - "5433:5432"
+networks:
+    shop_netwotk:
+        driver: bridge
+volumes:
+    es_data:
+        driver: local
