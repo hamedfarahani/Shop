@@ -7,4 +7,6 @@ chown -R $USER:www-data storage
 chown -R $USER:www-data bootstrap/cache
 php artisan storage:link
 php artisan key:generate
+php artisan migrate:fresh --seed
+php artisan passport:install
 composer dump-autoload

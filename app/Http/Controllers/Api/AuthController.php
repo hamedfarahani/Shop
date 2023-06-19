@@ -31,8 +31,6 @@ class AuthController extends Controller
 
     public function login(LoginRequest $loginRequest)
     {
-        $token = $this->loginService->login($loginRequest->validated());
-
-        return new LoginResource($token);
+        return $this->loginService->login($loginRequest->validated());
     }
 }

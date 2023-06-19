@@ -10,16 +10,14 @@ class LoginService implements LoginServiceInterface
 
     public function login($data)
     {
-        $credentials = [
-            'mobile' => $data['mobile'],
-            'password' => $data['password']
-        ];
-        if (!auth()->attempt($credentials)) {
-            return response(['error_message' => 'Incorrect Details.
-            Please try again']);
-        }
-        return auth()->user()->createToken('API Token')->accessToken;
 
+        $user = User::whereMobile($data['mobile'])->first();
+        if ($user && Hash::check($data['password'], $user->password)) {
+            $token= $user->createToken('API Token');;
+            $response = ['token' => $token->accessToken];
+            return response($response, 200);
+        }
+        return response(['error' => 'Invalid credentials'], 401);
 
     }
 
@@ -32,7 +30,7 @@ class LoginService implements LoginServiceInterface
             'password' => Hash::make($data['password']),
         ]);
 
-        return $user->createToken('API Token')->accessToken;
+        return $user->createToken('API Token');
 
     }
 }

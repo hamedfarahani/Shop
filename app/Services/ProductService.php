@@ -2,20 +2,24 @@
 
 namespace App\Services;
 
+use App\Filter\ProductFilter;
 use App\Models\AttributeProduct;
-use App\Models\AttributeProductValue;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 
 class ProductService implements ProductServiceInterface
 {
-    public function __construct(private AttributeProductValueServiceInterface $attributeProductValueService)
+    public function __construct(
+        private AttributeProductValueServiceInterface $attributeProductValueService,
+        private ProductFilter $productFilter
+    )
     {
     }
 
     public function index()
     {
-        // TODO: Implement index() method.
+        $products = Product::filter($this->productFilter);
+        return getOrPaginate($products);
     }
 
     public function store($validatedData)
@@ -26,7 +30,7 @@ class ProductService implements ProductServiceInterface
         try {
 
             $product = Product::create([
-                'user_id' => 1, //TODO
+                'user_id' => auth()->user()->id, //TODO
                 'title' => $validatedData['title'],
                 'description' => $validatedData['description'],
                 'image_location' => $validatedData['image'],
@@ -50,7 +54,6 @@ class ProductService implements ProductServiceInterface
             DB::rollback();
             throw $e;
         }
-
 
     }
 

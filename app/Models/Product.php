@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\FilterableTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -9,19 +10,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Product extends Model
 {
     use HasFactory;
+    use FilterableTrait;
 
     protected $guarded = [];
 
     /**
      * @return BelongsToMany
      */
-//    public function attributeProducts()
-//    {
-//        return $this->belongsToMany(Attribute::class);
-//    }
-
     public function attributes()
     {
         return $this->belongsToMany(Attribute::class);
     }
+
 }

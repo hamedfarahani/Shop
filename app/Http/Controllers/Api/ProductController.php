@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductStoreRequest;
 use App\Http\Requests\ProductUpdateRequest;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Services\ProductServiceInterface;
-use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -20,7 +20,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        return ProductResource::collection($this->productService->index());
     }
 
 
@@ -29,7 +29,7 @@ class ProductController extends Controller
      */
     public function store(ProductStoreRequest $request)
     {
-        $this->productService->store($request->validated());
+       return new ProductResource($this->productService->store($request->validated()));
     }
 
     /**
@@ -37,7 +37,7 @@ class ProductController extends Controller
      */
     public function update(ProductUpdateRequest $request, Product $product)
     {
-        $this->productService->update($request->validated());
+        return new ProductResource($this->productService->update($request->validated()));
     }
 
     /**
